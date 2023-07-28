@@ -3,6 +3,9 @@ module.exports = {
     content: ["./src/**/*.{html,js,jsx}"],
     theme: {
         extend: {},
+        fontFamily: {
+            worksans: ["Work Sans", "sans-serif"],
+        },
     },
     plugins: [],
 };
