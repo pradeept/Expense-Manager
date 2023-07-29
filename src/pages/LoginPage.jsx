@@ -1,20 +1,28 @@
 import { useState } from "react";
+import { loginThunk } from "../store/store";
+import { useDispatch } from "react-redux";
 
 function LoginPage() {
+    const dispatch = useDispatch();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const res = await dispatch(loginThunk());
+        console.log(res);
     };
 
     return (
-        <div className='bg-gray-50 font-worksans flex flex-col md:items-center justify-center  w-screen h-screen '>
-            <h1 className='text-3xl m-8 text-center font-bold tracking-wide'>
+        <div className='bg-gray-50 font-worksans flex flex-col items-center justify-center  w-screen h-screen '>
+            <h1 className='text-3xl m-8 text-center font-bold tracking-wide z-10'>
                 Expense Manager 💰
             </h1>
+            <div className='w-2/3 h-2/3 rotate-3 bg-red-100 shadow-lg absolute z-0 mt-10 '></div>
+            <div className='w-2/3 h-2/3 -rotate-3 bg-red-100 shadow-lg absolute z-0'></div>
             <form
-                className='py-16 px-8 md:px-16 rounded bg-blue-100 mx-4 md:w-2/3 lg:w-1/2 shadow'
+                className='py-16 px-8 md:px-16 rounded bg-blue-100 mx-4 z-10 md:w-2/3 lg:w-1/2 shadow'
                 onSubmit={handleSubmit}
             >
                 <div>
@@ -64,6 +72,7 @@ function LoginPage() {
                     </a>
                 </p>
             </form>
+            {/* Add footer from habify proj */}
         </div>
     );
 }
