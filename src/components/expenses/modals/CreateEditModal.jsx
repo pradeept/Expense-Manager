@@ -6,25 +6,61 @@ import { motion } from "framer-motion";
 import DropDown from "../../DropDown";
 import { AiOutlineClose } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { addExpense, editExpense, fetchOneExpense } from "../../../store/store";
 
-function CreateExpenseModal({ handleClose, edit, id }) {
+function CreateEditModal({ handleClose, edit, id }) {
+    const dispatch = useDispatch();
     const [expenseDetails, setExpenseDetails] = useState({
+        id,
         name: "",
         description: "",
         category: "",
-        dateOfExpense: new Date(),
+        dateOfExpense: 0,
         amount: 0,
+        createdAt: new Date().getTime(),
     });
 
     useEffect(() => {
         if (edit) {
-            //we will dispatch thunk and get the expense with
-            //id prop
-            //and set expense details
+            const fetchExpense = async () => {
+                const response = await dispatch(
+                    fetchOneExpense(expenseDetails.id)
+                );
+                console.log(response.payload);
+                const {
+                    id,
+                    name,
+                    description,
+                    category,
+                    dateOfExpense,
+                    amount,
+                } = response.payload;
+                setExpenseDetails((prev) => {
+                    return {
+                        ...prev,
+                        id,
+                        name,
+                        description,
+                        category,
+                        dateOfExpense,
+                        amount,
+                        createdAt: new Date().getTime(),
+                    };
+                });
+            };
+            fetchExpense();
         }
     }, []);
 
-    const categories = ["Health", "Travel", "Education", "Book", "Other"];
+    const categories = [
+        "Health",
+        "Electronics",
+        "Travel",
+        "Education",
+        "Books",
+        "Others",
+    ];
 
     useEffect(() => {
         document.body.classList.add("overflow-hidden");
@@ -33,6 +69,14 @@ function CreateExpenseModal({ handleClose, edit, id }) {
             document.body.classList.remove("overflow-hidden");
         };
     }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        edit
+            ? await dispatch(editExpense(expenseDetails))
+            : await dispatch(addExpense(expenseDetails));
+        handleClose();
+    };
 
     return ReactDOM.createPortal(
         <motion.div
@@ -46,11 +90,20 @@ function CreateExpenseModal({ handleClose, edit, id }) {
                 animate={{ transform: "translate(0px,0px)", opacity: 1 }}
                 exit={{ transform: "translate(0px,-2000px)", opacity: 0 }}
                 className='fixed w-4/5 md:w-2/5 bg-white text-slate-600'
+                onSubmit={handleSubmit}
             >
                 <div className='py-8 px-10 space-y-4'>
                     <div className='flex flex-col gap-3'>
                         <label>Name</label>
                         <input
+                            onChange={(e) =>
+                                setExpenseDetails((prev) => ({
+                                    ...prev,
+                                    name: e.target.value,
+                                }))
+                            }
+                            value={expenseDetails.name}
+                            maxLength={140}
                             type='text'
                             className='font-semibold border-b-2 focus:outline-none focus:border-b-blue-200 focus:bg-slate-50 p-1'
                         />
@@ -58,6 +111,13 @@ function CreateExpenseModal({ handleClose, edit, id }) {
                     <div className='flex flex-col gap-3'>
                         <label>Description</label>
                         <input
+                            onChange={(e) =>
+                                setExpenseDetails((prev) => ({
+                                    ...prev,
+                                    description: e.target.value,
+                                }))
+                            }
+                            value={expenseDetails.description}
                             type='text'
                             className='font-semibold border-b-2 focus:outline-none focus:border-b-blue-200 focus:bg-slate-50 p-1'
                         />
@@ -73,27 +133,35 @@ function CreateExpenseModal({ handleClose, edit, id }) {
                                     ...prev,
                                     category: option,
                                 }));
-                                console.log(expenseDetails);
                             }}
                         />
                     </div>
                     <div className='flex flex-col gap-3'>
                         <label>Date of Expense</label>
                         <DatePicker
-                            selected={expenseDetails.dateOfExpense}
+                            selected={expenseDetails.dateOfExpense || ""}
                             onChange={(date) =>
                                 setExpenseDetails((prev) => ({
                                     ...prev,
-                                    dateOfExpense: date,
+                                    dateOfExpense: date.getTime(),
                                 }))
                             }
+                            maxDate={new Date()}
                             className='border-b-2 text-center  focus:outline-none focus:border-b-blue-400'
                         />
                     </div>
                     <div className='flex flex-col gap-3'>
                         <label>Amount</label>
                         <input
+                            onChange={(e) =>
+                                setExpenseDetails((prev) => ({
+                                    ...prev,
+                                    amount: e.target.value,
+                                }))
+                            }
+                            value={expenseDetails.amount}
                             type='number'
+                            min={0}
                             className='font-semibold border-b-2 focus:outline-none focus:border-b-blue-200 focus:bg-slate-50 p-1'
                         />
                     </div>
@@ -103,10 +171,13 @@ function CreateExpenseModal({ handleClose, edit, id }) {
                         onClick={handleClose}
                         className='border-2 px-4 py-1 rounded bg-gray-500 text-[#e4e4e4]'
                     >
-                        <AiOutlineClose size='1.5rem' />
+                        <AiOutlineClose className='text-xl' />
                     </button>
-                    <button className='border-2 px-4 py-1 rounded bg-green-500 text-[#e4e4e4] hover:bg-green-700'>
-                        <MdDone size='1.5rem' />
+                    <button
+                        className='border-2 px-4 py-1 rounded bg-green-500 text-[#e4e4e4] hover:bg-green-700'
+                        onClick={handleSubmit}
+                    >
+                        <MdDone className='text-xl' />
                     </button>
                 </div>
             </motion.div>
@@ -115,4 +186,4 @@ function CreateExpenseModal({ handleClose, edit, id }) {
     );
 }
 
-export default CreateExpenseModal;
+export default CreateEditModal;

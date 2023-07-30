@@ -1,71 +1,90 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "../components/expenses/Table";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import CreateExpenseModal from "../components/expenses/modals/CreateExpenseModal";
+import CreateEditModal from "../components/expenses/modals/CreateEditModal";
 import { AnimatePresence } from "framer-motion";
-import DeleteModal from "../components/expenses/modals/DeleteModal";
-import Accordion from "../components/expenses/Accordion";
-import { data } from "../samples/tableData";
+import { FiLogOut } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchDate, setSearchTerm } from "../store/store";
+import { useNavigate } from "react-router-dom";
 
 function ViewExpensesPage() {
-    const [startDate, setStartDate] = useState(new Date());
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const [showCreateModal, setShowCreateModal] = useState(false);
+    const { searchTerm, searchDate } = useSelector((state) => {
+        return state.expenses;
+    });
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    useEffect(() => {
+        const name = localStorage.getItem("name");
+        name === null && navigate("/");
+    }, []);
 
-    const [searchExpense, setSearchExpense] = useState("");
+    const [showExpenseCEModal, setShowExpenseCEModal] = useState({
+        show: false,
+        edit: false,
+        id: -1,
+    });
 
-    const [expenses, setExpenses] = useState(data);
-
-    const handleSearch = (e) => {
-        setSearchExpense(e.target.value);
-        setExpenses(
-            data.filter((item) => {
-                return searchExpense === ""
-                    ? item
-                    : item.name
-                          .toLowerCase()
-                          .includes(searchExpense.toLowerCase());
-            })
-        );
-    };
-
-    const handleCreateExpenseModalClose = () => {
-        setShowCreateModal(false);
+    const handleCreateEditModalClose = () => {
+        setShowExpenseCEModal((prev) => ({ edit: false, id: -1, show: false }));
     };
 
     const handleCreateExpense = () => {
-        setShowCreateModal(true);
-        //after creating set back to false
+        setShowExpenseCEModal((prev) => ({ ...prev, show: true }));
     };
 
-    const handleExpenseDelete = () => {
-        setShowDeleteModal(true);
-        //check user selection yes / no
-        //if yes do needy
-        //if no set showDeleteModal back to false
+    const handleExpenseEdit = (id) => {
+        setShowExpenseCEModal((prev) => ({ edit: true, id, show: true }));
+        console.log("expense edit", id);
     };
-    const handleExpenseEdit = () => {};
+
+    const handleLogout = () => {
+        localStorage.removeItem("name");
+        navigate('/')
+    };
+
+    const createOrEditExpense = (
+        <AnimatePresence>
+            {showExpenseCEModal.show && (
+                <CreateEditModal
+                    handleClose={handleCreateEditModalClose}
+                    edit={showExpenseCEModal.edit}
+                    id={showExpenseCEModal.id}
+                />
+            )}
+        </AnimatePresence>
+    );
 
     return (
         <>
             <div className='flex flex-col justify-center '>
+                <FiLogOut
+                    onClick={handleLogout}
+                    className='place-self-end mx-10 cursor-pointer hover:text-blue-600 my-1 text-2xl'
+                ></FiLogOut>
                 <h1 className='text-3xl m-8 text-center font-bold tracking-wide z-10'>
                     Expense Manager 💰
                 </h1>
                 <div className='flex flex-col md:flex-row text-slate-600 justify-end items-center gap-10 mx-10'>
                     <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        selected={searchDate}
+                        onChange={(date) => {
+                            dispatch(setSearchDate(date.getTime()));
+                        }}
+                        maxDate={new Date()}
+                        placeholderText={new Date().toLocaleDateString("es")}
                         className='border-b-2 text-center  focus:outline-none focus:border-b-blue-400'
                     />
                     <input
                         type='text'
                         placeholder='Search by name'
-                        value={searchExpense}
-                        onChange={handleSearch}
+                        value={searchTerm}
+                        onChange={(e) =>
+                            dispatch(setSearchTerm(e.target.value))
+                        }
                         className='border-b-2 focus:outline-none text-center md:text-left focus:border-b-blue-400'
                     />
 
@@ -76,31 +95,10 @@ function ViewExpensesPage() {
                         + Create new Expense
                     </button>
                 </div>
-                {
-                    <AnimatePresence>
-                        {showCreateModal && (
-                            <CreateExpenseModal
-                                handleClose={handleCreateExpenseModalClose}
-                                edit={false}
-                            />
-                        )}
-                    </AnimatePresence>
-                }
-                {
-                    <AnimatePresence>
-                        {showDeleteModal && (
-                            <DeleteModal
-                                handleClose={() => setShowDeleteModal(false)}
-                            />
-                        )}
-                    </AnimatePresence>
-                }
-                <Table
-                    onDelete={handleExpenseDelete}
-                    onEdit={handleExpenseEdit}
-                    data={expenses}
-                />
-                <Accordion />
+
+                <Table onEdit={handleExpenseEdit} />
+                {/* <Accordion /> */}
+                {createOrEditExpense}
             </div>
         </>
     );

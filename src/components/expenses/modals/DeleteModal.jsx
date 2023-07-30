@@ -1,8 +1,12 @@
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { deleteExpense, setShowDlete } from "../../../store/store";
 
-function DeleteModal({ handleClose }) {
+function DeleteModal( {id} ) {
+    const dispatch = useDispatch();
+
     useEffect(() => {
         document.body.classList.add("overflow-hidden");
 
@@ -23,13 +27,26 @@ function DeleteModal({ handleClose }) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 100, duration: 0.2 }}
                 exit={{ scale: 0.5, opacity: 0 }}
+                className='flex bg-white flex-col gap-3 px-10 py-5'
             >
-                <button
-                    onClick={handleClose}
-                    className='w-48 h-20 bg-orange-500'
-                >
-                    X
-                </button>
+                <p>Are you sure you want to delete this Expense?</p>
+                <div className='flex justify-end mx-3 gap-4'>
+                    <button
+                        className='px-2 py-1 bg-red-500 text-slate-50 rounded hover:bg-red-600'
+                        onClick={() => dispatch(setShowDlete())}
+                    >
+                        No
+                    </button>
+                    <button
+                        className='px-2 py-1 bg-green-500 text-slate-50 rounded hover:bg-green-600'
+                        onClick={async () =>{
+                           await dispatch(deleteExpense(id))
+                           dispatch(setShowDlete())
+                        } }
+                    >
+                        Yes, Delete!
+                    </button>
+                </div>
             </motion.div>
         </motion.div>,
         document.getElementById("delete-container")

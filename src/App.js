@@ -5,7 +5,8 @@ import ViewExpensesPage from "./pages/ViewExpensesPage";
 function App() {
     return (
         <Routes>
-            <Route element={<ViewExpensesPage />} path='/' />
+            <Route element={<LoginPage />} path='/' />
+            <Route element={<ViewExpensesPage />} path='/home' />
         </Routes>
     );
 }

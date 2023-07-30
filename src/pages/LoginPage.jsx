@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { loginThunk } from "../store/store";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await dispatch(loginThunk());
-        console.log(res);
+        const userInput = {email,password}
+        const res = await dispatch(loginThunk(userInput));
+        const name = localStorage.getItem('name')
+        name === null ? navigate('/'): navigate('/home')
     };
 
     return (
