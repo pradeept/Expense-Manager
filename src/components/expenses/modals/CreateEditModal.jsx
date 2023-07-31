@@ -161,15 +161,16 @@ function CreateEditModal({ handleClose, edit, id }) {
                     <div className='flex flex-col gap-3'>
                         <label>Amount</label>
                         <input
-                            onChange={(e) =>
+                            onChange={(e) => {
                                 setExpenseDetails((prev) => ({
                                     ...prev,
-                                    amount: e.target.value,
-                                }))
-                            }
-                            value={expenseDetails.amount}
+                                    amount:
+                                        e.target.value < 0 ? 0 : e.target.value,
+                                }));
+                            }}
+                            value={expenseDetails.amount || ""}
                             type='number'
-                            min={0}
+                            min='0'
                             className='font-semibold border-b-2 focus:outline-none focus:border-b-blue-200 focus:bg-slate-50 p-1'
                         />
                     </div>
