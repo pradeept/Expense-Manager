@@ -1,9 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const fetchExpenses = createAsyncThunk("/expense/fetch", async () => {
+
+const getExpensesCount = createAsyncThunk('/expense/getCount',async()=>{
+    const response = await axios.get(`${process.env.REACT_APP_MOCK_EXPENSE_BASE_URL}`)
+    return response.data;
+})
+
+const fetchExpenses = createAsyncThunk("/expense/fetch", async (page) => {
+    
     const response = await axios.get(
-        process.env.REACT_APP_MOCK_EXPENSE_BASE_URL
+        `${process.env.REACT_APP_MOCK_EXPENSE_BASE_URL}/?sortBy=updatedAt&order=desc&page=${page}&limit=5`
     );
     return response.data;
 });
@@ -21,6 +28,7 @@ const addExpense = createAsyncThunk("/expense/add", async (data) => {
         process.env.REACT_APP_MOCK_EXPENSE_BASE_URL,
         {
             ...data,
+            updatedAt:new Date().getTime(),
             owner: localStorage.getItem("name"),
         }
     );
@@ -32,7 +40,7 @@ const editExpense = createAsyncThunk("/expense/edit", async (data) => {
         `${process.env.REACT_APP_MOCK_EXPENSE_BASE_URL}/${data.id}`,
         {
             ...data,
-            updatedAt: new Date(),
+            updatedAt: new Date().getTime(),
         }
     );
     return response.data;
@@ -52,4 +60,5 @@ export {
     editExpense,
     deleteExpense,
     fetchOneExpense,
+    getExpensesCount
 };

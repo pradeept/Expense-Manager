@@ -7,7 +7,12 @@ import DropDown from "../../DropDown";
 import { AiOutlineClose } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { addExpense, editExpense, fetchOneExpense } from "../../../store/store";
+import {
+    addExpense,
+    editExpense,
+    fetchExpenses,
+    fetchOneExpense,
+} from "../../../store/store";
 
 function CreateEditModal({ handleClose, edit, id }) {
     const dispatch = useDispatch();
@@ -18,7 +23,6 @@ function CreateEditModal({ handleClose, edit, id }) {
         category: "",
         dateOfExpense: 0,
         amount: 0,
-        createdAt: new Date().getTime(),
     });
 
     useEffect(() => {
@@ -45,7 +49,6 @@ function CreateEditModal({ handleClose, edit, id }) {
                         category,
                         dateOfExpense,
                         amount,
-                        createdAt: new Date().getTime(),
                     };
                 });
             };
@@ -72,9 +75,16 @@ function CreateEditModal({ handleClose, edit, id }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        edit
-            ? await dispatch(editExpense(expenseDetails))
-            : await dispatch(addExpense(expenseDetails));
+        if (edit) {
+            await dispatch(editExpense(expenseDetails));
+            dispatch(fetchExpenses());
+        } else {
+            await dispatch(addExpense(expenseDetails));
+            dispatch(fetchExpenses());
+        }
+        // edit
+        //     ? await dispatch(editExpense(expenseDetails))
+        //     : await dispatch(addExpense(expenseDetails));
         handleClose();
     };
 

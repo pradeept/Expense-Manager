@@ -1,29 +1,41 @@
 import { BiEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchExpenses, setShowDlete } from "../../store/store";
+import {
+    fetchExpenses,
+    getExpensesCount,
+    setShowDlete,
+} from "../../store/store";
 import { useEffect } from "react";
 import LoadingModal from "./modals/LoadingModal";
 import { dateDiff } from "../../utils/dateDiff";
 import { AnimatePresence } from "framer-motion";
 import DeleteModal from "./modals/DeleteModal";
+import ReactPaginate from "react-paginate";
 var ID = -1;
-var NAME = localStorage.getItem("name");
+
 
 function Table({ onEdit }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchExpenses());
-    }, []);
+        
+        dispatch(getExpensesCount());
+        dispatch(fetchExpenses(1));
+    }, [dispatch]);
 
-    const showDeleteModal = useSelector((state) => {
-        return state.expenses.showDelete;
+    const { showDeleteModal, totalCount } = useSelector((state) => {
+        return state.expenses;
     });
 
     const handleExpenseDelete = (id) => {
         dispatch(setShowDlete());
         ID = id;
+    };
+
+    const handlePageClick = (data) => {
+        const page = data.selected + 1;
+        dispatch(fetchExpenses(page));
     };
 
     const { data, showLoading } = useSelector(
@@ -51,11 +63,13 @@ function Table({ onEdit }) {
 
     const renderedRows = data
         .filter((item, index) => index < 5)
-        .reverse()
         .map((item) => {
-            const updatedTime = dateDiff(item.createdAt);
+            const updatedTime = dateDiff(item.updatedAt);
             return (
-                <tr className='bg-white border-b text-center' key={item.id}>
+                <tr
+                    className='bg-white border-b text-center odd:bg-slate-100'
+                    key={item.id}
+                >
                     <th className='px-6 py-4'>{item.name}</th>
                     <td className='px-6 py-4'>{item.category}</td>
                     <td className='px-6 py-4'>
@@ -66,7 +80,8 @@ function Table({ onEdit }) {
                     </td>
                     <td className='px-6 py-4'>{updatedTime.toString()}</td>
                     <td className='px-6 py-4'>
-                        {item.owner === NAME ? "me" : item.owner}
+                        {console.log(item.owner)}
+                        {item.owner === localStorage.getItem("name") ? "me" : item.owner}
                     </td>
                     <td>
                         <div className='h-full w-full flex items-center gap-4 justify-center'>
@@ -86,11 +101,11 @@ function Table({ onEdit }) {
         });
 
     return (
-        <div className='container mx-auto'>
+        <div className='container mx-auto font-worksans'>
             {showLoading && <LoadingModal />}
             <div className='relative overflow-x-auto mx-4 my-8 border-2 '>
                 <table className='w-full text-sm text-left text-gray-500 -400 '>
-                    <thead className='text-xs text-gray-700 uppercase bg-gray-50 -700 -400'>
+                    <thead className='text-sm text-slate-100 uppercase bg-gray-500  '>
                         <tr className='text-center'>
                             <th className='px-6 py-3'>Name</th>
                             <th className='px-6 py-3'>Category</th>
@@ -101,14 +116,24 @@ function Table({ onEdit }) {
                             <th className='px-6 py-3'></th>
                         </tr>
                     </thead>
-                    <tbody className='odd:bg-slate-400'>{renderedRows}</tbody>
+                    <tbody className=''>{renderedRows}</tbody>
                 </table>
             </div>
-            <div className='flex justify-end mx-48'>
-                <button>1</button>
-                <button>2</button>
-                <button>3</button>
-                <button>4</button>
+            <div className='flex justify-center md:justify-end  md:mx-10 mb-10 '>
+                <ReactPaginate
+                    pageCount={totalCount / 5}
+                    previousLabel={"prev"}
+                    nextLabel={"next"}
+                    breakLabel={"..."}
+                    marginPagesDisplayed={2}
+                    onPageChange={handlePageClick}
+                    breakClassName='flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-600 bg-white border border-gray-300  hover:bg-gray-300 hover:text-gray-700 '
+                    containerClassName='inline-flex -space-x-px text-sm'
+                    nextClassName='flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-600 bg-white border border-gray-300  hover:bg-gray-300 hover:text-gray-700 '
+                    previousClassName='flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-600 bg-white border border-gray-300  hover:bg-gray-300 hover:text-gray-700 '
+                    pageClassName='flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-600 bg-white border border-gray-300  hover:bg-gray-300 hover:text-gray-700 '
+                    activeClassName='bg-blue-300'
+                />
             </div>
             <AnimatePresence>
                 {showDeleteModal && <DeleteModal id={ID} />}

@@ -14,3 +14,4 @@ export * from "./thunks/loginThunk";
 export * from "./thunks/expenseThunk";
 
 export * from "./slices/expensesSlice";
+export * from "./slices/userSlice";

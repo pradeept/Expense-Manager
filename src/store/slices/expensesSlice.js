@@ -5,12 +5,14 @@ import {
     editExpense,
     fetchExpenses,
     fetchOneExpense,
+    getExpensesCount,
 } from "../store";
 
 const expensesSlice = createSlice({
     name: "expenses",
     initialState: {
         data: [],
+        totalCount:0,
         searchTerm: "",
         searchDate: 0,
         showLoading: false,
@@ -34,10 +36,20 @@ const expensesSlice = createSlice({
         setShowDlete(state, action) {
             state.showDelete = !state.showDelete;
         },
-        setSuccess(state, action) {},
-        setFailure(state, action) {},
     },
     extraReducers(builder) {
+        builder.addCase(getExpensesCount.pending, (state, action) => {
+        });
+        builder.addCase(getExpensesCount.fulfilled, (state, action) => {
+            state.showLoading = false;
+            state.totalCount = action.payload.length;
+        });
+        builder.addCase(getExpensesCount.rejected, (state, action) => {
+            state.showLoading = false;
+            state.failure.showErrorBox = true;
+            state.failure.message = "Failed to fetch Expenses count";
+        });
+
         builder.addCase(fetchExpenses.pending, (state, action) => {
             state.showLoading = true;
         });

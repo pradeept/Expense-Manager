@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import CreateEditModal from "../components/expenses/modals/CreateEditModal";
 import { AnimatePresence } from "framer-motion";
 import { FiLogOut } from "react-icons/fi";
+import { AiOutlineUser } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchDate, setSearchTerm } from "../store/store";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ function ViewExpensesPage() {
         edit: false,
         id: -1,
     });
+    const [showUser, setShowUser] = useState(false);
 
     const handleCreateEditModalClose = () => {
         setShowExpenseCEModal((prev) => ({ edit: false, id: -1, show: false }));
@@ -43,7 +45,7 @@ function ViewExpensesPage() {
 
     const handleLogout = () => {
         localStorage.removeItem("name");
-        navigate('/')
+        navigate("/");
     };
 
     const createOrEditExpense = (
@@ -60,11 +62,24 @@ function ViewExpensesPage() {
 
     return (
         <>
-            <div className='flex flex-col justify-center '>
-                <FiLogOut
-                    onClick={handleLogout}
-                    className='place-self-end mx-10 cursor-pointer hover:text-blue-600 my-1 text-2xl'
-                ></FiLogOut>
+            <div className='flex flex-col justify-center font-worksans'>
+                <div className='relative flex justify-end gap-3 items-center mx-4'>
+                    <AiOutlineUser
+                        className=' my-1 text-2xl'
+                        onClick={() => setShowUser((prev) => !prev)}
+                    />
+                    {showUser && (
+                        <div className=' h-10 w-10 absolute text-orange-500 font-bold top-5 right-10 my-1 text-md '>
+                            <small className=' '>
+                                {localStorage.getItem("name").toUpperCase()}
+                            </small>
+                        </div>
+                    )}
+                    <FiLogOut
+                        onClick={handleLogout}
+                        className='  cursor-pointer hover:text-blue-600 my-1 text-2xl'
+                    ></FiLogOut>
+                </div>
                 <h1 className='text-3xl m-8 text-center font-bold tracking-wide z-10'>
                     Expense Manager 💰
                 </h1>

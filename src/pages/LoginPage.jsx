@@ -1,21 +1,37 @@
 import { useState } from "react";
-import { loginThunk } from "../store/store";
-import { useDispatch } from "react-redux";
+import { loginThunk, setshowFailure } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import LoginFailedModal from "../components/login/modals/LoginFailedModal";
+import { AnimatePresence } from "framer-motion";
+import LoginLoadingModal from "../components/login/modals/LoginLoadingModal";
 
 function LoginPage() {
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const {showFailure,showLoading} = useSelector((state) => {
+        return state.user;
+    });
+
+    const handleFailedModal = () => {
+        dispatch(setshowFailure(false));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const userInput = {email,password}
+        const userInput = { email, password };
         const res = await dispatch(loginThunk(userInput));
-        const name = localStorage.getItem('name')
-        name === null ? navigate('/'): navigate('/home')
+        const name = localStorage.getItem("name");
+        if(name === null){
+            setEmail('')
+            setPassword('')
+        }else{
+            navigate("/home")
+        }
     };
 
     return (
@@ -76,6 +92,19 @@ function LoginPage() {
                     </a>
                 </p>
             </form>
+
+            <AnimatePresence>
+                {showFailure && (
+                    <LoginFailedModal handleClose={handleFailedModal} />
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {
+                    showLoading&& <LoginLoadingModal />
+                }
+            </AnimatePresence>
+
             {/* Add footer from habify proj */}
         </div>
     );
