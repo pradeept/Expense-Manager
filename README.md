@@ -29,6 +29,7 @@ password: 123
 - Pagination for Table of Expenses
 - Responsive Components
 - Success & Failure Modals for CRUD & login Operations
+- Cool Animations
 
 ## How to Run?  ⚙
 

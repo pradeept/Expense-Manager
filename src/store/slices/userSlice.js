@@ -23,6 +23,7 @@ const userSlice = createSlice({
             state.showLoading = false;
         });
         builder.addCase(loginThunk.rejected, (state, action) => {
+            state.showLoading = false
             state.showFailure = true;
         });
     },
