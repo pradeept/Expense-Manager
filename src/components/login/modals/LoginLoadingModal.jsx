@@ -6,6 +6,7 @@ function LoginLoadingModal() {
     const container = useRef();
 
     useEffect(() => {
+        //To disable scrolling when modal is visible.
         document.body.classList.add("overflow-hidden");
 
         return () => {

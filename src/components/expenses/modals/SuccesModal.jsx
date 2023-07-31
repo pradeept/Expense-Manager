@@ -1,16 +1,18 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setShowSuccess } from "../../../store/store";
 import { motion } from "framer-motion";
 import { BsInfoCircle } from "react-icons/bs";
-import { setShowSuccess } from "../../../store/store";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 
 function SuccessModal({ msg }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        //To self close modal after 3sec.
         setTimeout(() => {
             dispatch(setShowSuccess());
         }, 3000);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

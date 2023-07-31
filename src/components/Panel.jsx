@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
+//Panel to show dropdown options.
 function Panel({ children, className, ...rest }) {
     const finalClassName = classNames(
         "border rounded p-3 z-10  shadow bg-white w-full",

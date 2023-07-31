@@ -8,6 +8,7 @@ function DropDown({ options, value, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
+        //To automatically close dropdown when click on body is detected.
         const handler = (event) => {
             if (!divEl.current) {
                 return;

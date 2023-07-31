@@ -23,7 +23,7 @@ function Table({ onEdit }) {
         dispatch(fetchExpenses(1));
     }, [dispatch]);
 
-    const { showDelete, totalCount,showLoading } = useSelector((state) => {
+    const { showDelete, totalCount, showLoading } = useSelector((state) => {
         return state.expenses;
     });
 
@@ -37,13 +37,13 @@ function Table({ onEdit }) {
         dispatch(fetchExpenses(page));
     };
 
-    
+    //custom hook
     const data = useExpenseFilter();
-    //const data = useExpenseFilter
 
     const renderedRows = data
         .filter((item, index) => index < 5)
         .map((item) => {
+            //dateDiff() is a utility function to get difference between 2 dates.
             const updatedTime = dateDiff(item.updatedAt);
             return (
                 <tr

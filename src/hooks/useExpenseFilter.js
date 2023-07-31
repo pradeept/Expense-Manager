@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 
-
-
+//This custom hook filters data based on search keyword and date selected.
 function useExpenseFilter(){
     const { data } = useSelector(
         ({ expenses: { data, searchTerm, searchDate } }) => {

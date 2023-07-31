@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchDate, setSearchTerm } from "../store/store";
 import Table from "../components/expenses/Table";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,9 +9,6 @@ import CreateEditModal from "../components/expenses/modals/CreateEditModal";
 import { AnimatePresence } from "framer-motion";
 import { FiLogOut } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
-import { setSearchDate, setSearchTerm } from "../store/store";
-import { useNavigate } from "react-router-dom";
 import SuccessModal from "../components/expenses/modals/SuccesModal";
 import FailureModal from "../components/expenses/modals/FailureModal";
 

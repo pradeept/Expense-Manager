@@ -1,18 +1,20 @@
-import { motion } from "framer-motion";
-import { BiErrorAlt } from "react-icons/bi";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setShowFailed } from "../../../store/store";
-import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { BiErrorAlt } from "react-icons/bi";
 
-function FailureModal({msg}) {
+function FailureModal({ msg }) {
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-        setTimeout(()=>{
-            dispatch(setShowFailed())
-        },3000)
+    useEffect(() => {
+        //To self close modal after 3sec.
+        setTimeout(() => {
+            dispatch(setShowFailed());
+        }, 3000);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    }, []);
 
     const handleClose = () => {
         dispatch(setShowFailed());

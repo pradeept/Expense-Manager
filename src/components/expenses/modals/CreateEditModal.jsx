@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { motion } from "framer-motion";
-import DropDown from "../../DropDown";
-import { AiOutlineClose } from "react-icons/ai";
-import { MdDone } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import {
     addExpense,
@@ -13,6 +7,12 @@ import {
     fetchExpenses,
     fetchOneExpense,
 } from "../../../store/store";
+import { motion } from "framer-motion";
+import DropDown from "../../DropDown";
+import { AiOutlineClose } from "react-icons/ai";
+import { MdDone } from "react-icons/md";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function CreateEditModal({ handleClose, edit, id }) {
     const dispatch = useDispatch();
@@ -26,6 +26,7 @@ function CreateEditModal({ handleClose, edit, id }) {
     });
 
     useEffect(() => {
+        //check if this modal has to act as Creater or Editor of expense.
         if (edit) {
             const fetchExpense = async () => {
                 const response = await dispatch(
@@ -66,6 +67,7 @@ function CreateEditModal({ handleClose, edit, id }) {
     ];
 
     useEffect(() => {
+        //To block user from scrolling when modal is visible
         document.body.classList.add("overflow-hidden");
 
         return () => {

@@ -1,19 +1,34 @@
-import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useDispatch } from "react-redux";
-import { deleteExpense, fetchExpenses, setShowDelete } from "../../../store/store";
+import {
+    deleteExpense,
+    fetchExpenses,
+    getExpensesCount,
+    setShowDelete,
+} from "../../../store/store";
+import { motion } from "framer-motion";
 
 function DeleteModal({ id }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        //To block user from scrolling when modal is visible
         document.body.classList.add("overflow-hidden");
 
         return () => {
             document.body.classList.remove("overflow-hidden");
         };
     }, []);
+
+    const handleCancel = () => dispatch(setShowDelete());
+
+    const handleConfirm = async () => {
+        await dispatch(deleteExpense(id));
+        dispatch(getExpensesCount());
+        dispatch(fetchExpenses(1));
+        dispatch(setShowDelete());
+    };
 
     return createPortal(
         <motion.div
@@ -33,17 +48,13 @@ function DeleteModal({ id }) {
                 <div className='flex justify-end mx-3 gap-4'>
                     <button
                         className='px-2 py-1 bg-red-500 text-slate-50 rounded hover:bg-red-600'
-                        onClick={() => dispatch(setShowDelete())}
+                        onClick={handleCancel}
                     >
                         No
                     </button>
                     <button
                         className='px-2 py-1 bg-green-500 text-slate-50 rounded hover:bg-green-600'
-                        onClick={async () => {
-                            await dispatch(deleteExpense(id));
-                            dispatch(fetchExpenses(1))
-                            dispatch(setShowDelete());
-                        }}
+                        onClick={handleConfirm}
                     >
                         Yes, Delete!
                     </button>
