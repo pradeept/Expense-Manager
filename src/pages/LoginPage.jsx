@@ -105,7 +105,6 @@ function LoginPage() {
                 }
             </AnimatePresence>
 
-            {/* Add footer from habify proj */}
         </div>
     );
 }

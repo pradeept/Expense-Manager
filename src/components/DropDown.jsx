@@ -9,7 +9,6 @@ function DropDown({ options, value, onChange }) {
 
     useEffect(() => {
         const handler = (event) => {
-            //if reference is not assigned to any element
             if (!divEl.current) {
                 return;
             }
