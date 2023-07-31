@@ -91,7 +91,9 @@ function ViewExpensesPage() {
                     <DatePicker
                         selected={searchDate}
                         onChange={(date) => {
-                            dispatch(setSearchDate(date.getTime()));
+                            date === null
+                                ? dispatch(setSearchDate(0))
+                                : dispatch(setSearchDate(date.getTime()));
                         }}
                         maxDate={new Date()}
                         placeholderText={new Date().toLocaleDateString("es")}

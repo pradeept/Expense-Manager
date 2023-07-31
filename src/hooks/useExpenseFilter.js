@@ -6,6 +6,7 @@ function useExpenseFilter(){
     const { data } = useSelector(
         ({ expenses: { data, searchTerm, searchDate } }) => {
             const filteredData = data.filter((expense) => {
+                
                 if (searchDate !== 0) {
                     return (
                         new Date(expense.dateOfExpense).toLocaleDateString(
