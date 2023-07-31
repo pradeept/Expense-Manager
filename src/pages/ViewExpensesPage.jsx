@@ -45,7 +45,6 @@ function ViewExpensesPage() {
 
     const handleExpenseEdit = (id) => {
         setShowExpenseCEModal((prev) => ({ edit: true, id, show: true }));
-        console.log("expense edit", id);
     };
 
     const handleLogout = () => {

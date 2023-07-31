@@ -12,6 +12,7 @@ import { dateDiff } from "../../utils/dateDiff";
 import { AnimatePresence } from "framer-motion";
 import DeleteModal from "./modals/DeleteModal";
 import ReactPaginate from "react-paginate";
+import useExpenseFilter from "../../hooks/useExpenseFilter";
 var ID = -1;
 
 function Table({ onEdit }) {
@@ -22,7 +23,7 @@ function Table({ onEdit }) {
         dispatch(fetchExpenses(1));
     }, [dispatch]);
 
-    const { showDelete, totalCount } = useSelector((state) => {
+    const { showDelete, totalCount,showLoading } = useSelector((state) => {
         return state.expenses;
     });
 
@@ -36,28 +37,9 @@ function Table({ onEdit }) {
         dispatch(fetchExpenses(page));
     };
 
-    const { data, showLoading } = useSelector(
-        ({ expenses: { data, searchTerm, showLoading, searchDate } }) => {
-            const filteredData = data.filter((expense) => {
-                if (searchDate !== 0) {
-                    return (
-                        new Date(expense.dateOfExpense).toLocaleDateString(
-                            "es"
-                        ) === new Date(searchDate).toLocaleDateString("es")
-                    );
-                } else {
-                    return expense.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase());
-                }
-            });
-
-            return {
-                data: filteredData,
-                showLoading,
-            };
-        }
-    );
+    
+    const data = useExpenseFilter();
+    //const data = useExpenseFilter
 
     const renderedRows = data
         .filter((item, index) => index < 5)
