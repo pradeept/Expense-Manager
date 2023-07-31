@@ -25,7 +25,3 @@ function dateDiff(updatedDate) {
 
 export { dateDiff };
 
-//   // Calculate the time difference in seconds, minutes, and hours
-//   const secondsDiff = dateDiff(currentDate, futureDate, 'seconds');
-//   const minutesDiff = dateDiff(currentDate, futureDate, 'minutes');
-//   const hoursDiff = dateDiff(currentDate, futureDate, 'hours');

@@ -2,9 +2,9 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { deleteExpense, setShowDlete } from "../../../store/store";
+import { deleteExpense, fetchExpenses, setShowDelete } from "../../../store/store";
 
-function DeleteModal( {id} ) {
+function DeleteModal({ id }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -33,16 +33,17 @@ function DeleteModal( {id} ) {
                 <div className='flex justify-end mx-3 gap-4'>
                     <button
                         className='px-2 py-1 bg-red-500 text-slate-50 rounded hover:bg-red-600'
-                        onClick={() => dispatch(setShowDlete())}
+                        onClick={() => dispatch(setShowDelete())}
                     >
                         No
                     </button>
                     <button
                         className='px-2 py-1 bg-green-500 text-slate-50 rounded hover:bg-green-600'
-                        onClick={async () =>{
-                           await dispatch(deleteExpense(id))
-                           dispatch(setShowDlete())
-                        } }
+                        onClick={async () => {
+                            await dispatch(deleteExpense(id));
+                            dispatch(fetchExpenses(1))
+                            dispatch(setShowDelete());
+                        }}
                     >
                         Yes, Delete!
                     </button>

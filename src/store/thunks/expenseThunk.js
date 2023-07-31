@@ -50,7 +50,6 @@ const deleteExpense = createAsyncThunk("/expense/delete", async (id) => {
     const response = await axios.delete(
         `${process.env.REACT_APP_MOCK_EXPENSE_BASE_URL}/${id}`
     );
-    console.log(response.data);
     return response.data;
 });
 

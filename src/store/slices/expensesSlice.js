@@ -17,7 +17,7 @@ const expensesSlice = createSlice({
         searchDate: 0,
         showLoading: false,
         showDelete: false,
-        sucess: {
+        success: {
             showSuccessBox: false,
             message: "",
         },
@@ -33,9 +33,17 @@ const expensesSlice = createSlice({
         setSearchDate(state, action) {
             state.searchDate = action.payload;
         },
-        setShowDlete(state, action) {
+        setShowDelete(state, action) {
             state.showDelete = !state.showDelete;
         },
+        setShowSuccess(state,action){
+            state.success.showSuccessBox = false;
+            state.success.message = ''
+        },
+        setShowFailed(state,action){
+            state.failure.showErrorBox = false;
+            state.failure.message= ''
+        }
     },
     extraReducers(builder) {
         builder.addCase(getExpensesCount.pending, (state, action) => {
@@ -70,6 +78,7 @@ const expensesSlice = createSlice({
             state.showLoading = false;
         });
         builder.addCase(fetchOneExpense.rejected, (state, action) => {
+            state.showLoading = false;
             state.failure.showErrorBox = true;
             state.failure.message = "Could not fetch the Expense!";
         });
@@ -79,10 +88,12 @@ const expensesSlice = createSlice({
         });
         builder.addCase(addExpense.fulfilled, (state, action) => {
             state.showLoading = false;
-            console.log(action.payload);
             state.data.push(action.payload);
+            state.success.showSuccessBox=true;
+            state.success.message="New Expense added!"
         });
         builder.addCase(addExpense.rejected, (state, action) => {
+            state.showLoading = false;
             state.failure.showErrorBox = true;
             state.failure.message = "Could not fetch the Expense!";
         });
@@ -92,15 +103,17 @@ const expensesSlice = createSlice({
         });
         builder.addCase(editExpense.fulfilled, (state, action) => {
             state.showLoading = false;
-            console.log(action.payload);
             state.data = state.data.map((item) => {
                 if (item.id === action.payload.id) {
                     return action.payload;
                 }
                 return item;
             });
+            state.success.showSuccessBox=true;
+            state.success.message="Expense Modified Successfully!"
         });
         builder.addCase(editExpense.rejected, (state, action) => {
+            state.showLoading = false;
             state.failure.showErrorBox = true;
             state.failure.message = "Could not update the Expense!";
         });
@@ -113,8 +126,11 @@ const expensesSlice = createSlice({
             state.data = state.data.filter((item) => {
                 return item.id !== action.payload.id;
             });
+            state.success.showSuccessBox=true;
+            state.success.message="Expense Deleted Successfully!"
         });
         builder.addCase(deleteExpense.rejected, (state, action) => {
+            state.showLoading = false;
             state.failure.showErrorBox = true;
             state.failure.message = "Could not Delete the Expense!";
         });
@@ -123,5 +139,5 @@ const expensesSlice = createSlice({
 
 export const expenseReducer = expensesSlice.reducer;
 
-export const { setSearchTerm, setSearchDate, setShowDlete } =
+export const { setSearchTerm, setSearchDate, setShowDelete, setShowFailed, setShowSuccess } =
     expensesSlice.actions;

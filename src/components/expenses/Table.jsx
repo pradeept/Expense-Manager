@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     fetchExpenses,
     getExpensesCount,
-    setShowDlete,
+    setShowDelete,
 } from "../../store/store";
 import { useEffect } from "react";
 import LoadingModal from "./modals/LoadingModal";
@@ -14,22 +14,20 @@ import DeleteModal from "./modals/DeleteModal";
 import ReactPaginate from "react-paginate";
 var ID = -1;
 
-
 function Table({ onEdit }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        
         dispatch(getExpensesCount());
         dispatch(fetchExpenses(1));
     }, [dispatch]);
 
-    const { showDeleteModal, totalCount } = useSelector((state) => {
+    const { showDelete, totalCount } = useSelector((state) => {
         return state.expenses;
     });
 
     const handleExpenseDelete = (id) => {
-        dispatch(setShowDlete());
+        dispatch(setShowDelete());
         ID = id;
     };
 
@@ -80,8 +78,9 @@ function Table({ onEdit }) {
                     </td>
                     <td className='px-6 py-4'>{updatedTime.toString()}</td>
                     <td className='px-6 py-4'>
-                        {console.log(item.owner)}
-                        {item.owner === localStorage.getItem("name") ? "me" : item.owner}
+                        {item.owner === localStorage.getItem("name")
+                            ? "me"
+                            : item.owner}
                     </td>
                     <td>
                         <div className='h-full w-full flex items-center gap-4 justify-center'>
@@ -121,7 +120,7 @@ function Table({ onEdit }) {
             </div>
             <div className='flex justify-center md:justify-end  md:mx-10 mb-10 '>
                 <ReactPaginate
-                    pageCount={totalCount / 5}
+                    pageCount={Math.ceil(totalCount / 5)}
                     previousLabel={"prev"}
                     nextLabel={"next"}
                     breakLabel={"..."}
@@ -136,7 +135,7 @@ function Table({ onEdit }) {
                 />
             </div>
             <AnimatePresence>
-                {showDeleteModal && <DeleteModal id={ID} />}
+                {showDelete && <DeleteModal id={ID} />}
             </AnimatePresence>
         </div>
     );

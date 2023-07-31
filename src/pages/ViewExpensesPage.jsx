@@ -9,18 +9,23 @@ import { AiOutlineUser } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchDate, setSearchTerm } from "../store/store";
 import { useNavigate } from "react-router-dom";
+import SuccessModal from "../components/expenses/modals/SuccesModal";
+import FailureModal from "../components/expenses/modals/FailureModal";
 
 function ViewExpensesPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { searchTerm, searchDate } = useSelector((state) => {
-        return state.expenses;
-    });
+    const { searchTerm, searchDate, success, failure } = useSelector(
+        (state) => {
+            return state.expenses;
+        }
+    );
 
     useEffect(() => {
         const name = localStorage.getItem("name");
         name === null && navigate("/");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [showExpenseCEModal, setShowExpenseCEModal] = useState({
@@ -112,8 +117,17 @@ function ViewExpensesPage() {
                 </div>
 
                 <Table onEdit={handleExpenseEdit} />
-                {/* <Accordion /> */}
                 {createOrEditExpense}
+                <AnimatePresence>
+                    {success.showSuccessBox && (
+                        <SuccessModal msg={success.message} />
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {failure.showErrorBox && (
+                        <FailureModal msg={failure.message} />
+                    )}
+                </AnimatePresence>
             </div>
         </>
     );

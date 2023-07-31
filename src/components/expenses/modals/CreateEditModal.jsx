@@ -31,7 +31,6 @@ function CreateEditModal({ handleClose, edit, id }) {
                 const response = await dispatch(
                     fetchOneExpense(expenseDetails.id)
                 );
-                console.log(response.payload);
                 const {
                     id,
                     name,
@@ -54,6 +53,7 @@ function CreateEditModal({ handleClose, edit, id }) {
             };
             fetchExpense();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const categories = [
@@ -77,14 +77,11 @@ function CreateEditModal({ handleClose, edit, id }) {
         e.preventDefault();
         if (edit) {
             await dispatch(editExpense(expenseDetails));
-            dispatch(fetchExpenses());
+            dispatch(fetchExpenses(1));
         } else {
             await dispatch(addExpense(expenseDetails));
-            dispatch(fetchExpenses());
+            dispatch(fetchExpenses(1));
         }
-        // edit
-        //     ? await dispatch(editExpense(expenseDetails))
-        //     : await dispatch(addExpense(expenseDetails));
         handleClose();
     };
 
@@ -138,7 +135,6 @@ function CreateEditModal({ handleClose, edit, id }) {
                             options={categories}
                             value={expenseDetails.category}
                             onChange={(option) => {
-                                console.log(option);
                                 setExpenseDetails((prev) => ({
                                     ...prev,
                                     category: option,

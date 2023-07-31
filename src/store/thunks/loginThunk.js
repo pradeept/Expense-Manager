@@ -5,7 +5,6 @@ const loginThunk = createAsyncThunk("/user/login", async (data) => {
     const response = await axios.get(`${process.env.REACT_APP_MOCK_USER_BASE_URL}/?email=${data.email}`);
 
     if(response.data[0].email===data.email && response.data[0].password === data.password){
-        console.log("success");
         localStorage.setItem('name',response.data[0].name);
         return response.data;
     }

@@ -24,7 +24,7 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const userInput = { email, password };
-        const res = await dispatch(loginThunk(userInput));
+        await dispatch(loginThunk(userInput));
         const name = localStorage.getItem("name");
         if(name === null){
             setEmail('')
