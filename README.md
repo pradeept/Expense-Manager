@@ -9,6 +9,9 @@ email: a@gmail.com
 password: 123
 ``````
 
+## Docker image 🐋 : 
+``` docker pull pradeept17/expense-manager:v1 ```
+
 ## Tech Stack 💡
 
 1. React 
@@ -58,5 +61,4 @@ https://64c4b54567cfdca3b660e9e4.mockapi.io/users
 npm start
 ```
 
-
-#### _*This application is built as a part of PeerXP assignment._
+###
