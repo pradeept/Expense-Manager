@@ -1,6 +1,6 @@
 # Expense Manager 
 
-Live 🎈 - https://expense-manager-peerxp.netlify.app/
+Live 🎈 - [expense-manager](https://expense-manager-hosted.netlify.app/)
 
 Login:
 ```
